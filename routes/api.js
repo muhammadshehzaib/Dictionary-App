@@ -1,6 +1,6 @@
 const express = require('express');
-const router = new express.Router();
 const bookModel = require('../model/book_model');
+const router = new express.Router();
 
 router.post('/dictionary',async (req, res)=>{
     const book = new bookModel(req.body)
@@ -25,5 +25,22 @@ router.get('/dictionary',async(req, res)=>{
 
     
 })
+router.get("/dictionary/:id",async (req, res) => {
+    const _id = req.params.id
+    try {
+        const book = await bookModel.findById(_id)
+        if (!book) {
+            return res.status(404).send()
+        }
+        res.send(book)
+
+    } catch (error) {
+        res.status(500).send()
+    }
+    console.log(req.body);
+
+})
+
+
 
 module.exports = router
