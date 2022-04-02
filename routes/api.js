@@ -22,8 +22,6 @@ router.get('/dictionary',async(req, res)=>{
     }
     
     console.log(req.body);
-
-    
 })
 router.get("/dictionary/:id",async (req, res) => {
     const _id = req.params.id
@@ -41,6 +39,18 @@ router.get("/dictionary/:id",async (req, res) => {
 
 })
 
+router.delete('/tasks/:id', async (req, res) => {
+    try {
+        const task = await Task.findByIdAndDelete(req.params.id)
 
+        if (!task) {
+            res.status(404).send()
+        }
+
+        res.send(task)
+    } catch (e) {
+        res.status(500).send()
+    }
+})
 
 module.exports = router
