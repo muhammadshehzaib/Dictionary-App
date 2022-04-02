@@ -39,9 +39,31 @@ router.get("/dictionary/:id",async (req, res) => {
 
 })
 
-router.delete('/tasks/:id', async (req, res) => {
+router.patch("/dictionary/:id",async (req, res)=>{
+    const updates = Object.keys(req.body)
+    const allowedUpdates = ['bookName',"authorName"]
+    const isValidOperation = updates.every((update)=>allowedUpdates.includes(update))
+
+    
+    if (!isValidOperation) {
+        return res.status(400).send({ error: 'Invalid updates!' })
+    }
     try {
-        const task = await Task.findByIdAndDelete(req.params.id)
+        const task = await bookModel.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
+
+        if (!task) {
+            return res.status(404).send()
+        }
+
+        res.send(task)
+    } catch (e) {
+        res.status(400).send(e)
+    }
+})
+
+router.delete('/dictionary/:id', async (req, res) => {
+    try {
+        const task = await bookModel.findByIdAndDelete(req.params.id)
 
         if (!task) {
             res.status(404).send()
